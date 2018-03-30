@@ -1,0 +1,22 @@
+language: java
+before_install:
+- sudo rm /usr/local/bin/docker-compose
+- sudo curl -L https://github.com/docker/compose/releases/download/1.20.1/docker-compose-`uname
+  -s`-`uname -m` -o /usr/local/bin/docker-compose
+- sudo chmod +x /usr/local/bin/docker-compose
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+install:
+- mvn clean
+- mvn install -Dmaven.javadoc.skip=true -B -V
+- ls -l
+- docker build --build-arg JAR_FILE=./target/app.jar -t $DOCKER_USERNAME/se234-lab10-backend  .
+- docker push  $DOCKER_USERNAME/se234-lab10-backend
+- docker pull  $DOCKER_USERNAME/se234-lab10-client
+script:
+- docker-compose -H $DOCKER_HOST up -d
+after_success:
+- docker ps
+env:
+  global:
+  - secure: OUeP7JBcA8cCzVD4imnhVfdCQ+mCRKX7yrepVq/Cn2r9V6CSuFM2AVH0ItPCDMAmNdJDW8jfkKxWi1gqM6S40paAN+EdXQ2PU1i7tF7BjUd9FjXtvcXcQYaXDCOywpdOfC/kq84CFj+9fyng73doF2DiiKMpBS8MLdrk8TmmgdBujwVx7R+82qQZ6PyqFTF+MJj1cujrnI1QMhAEjfaZ47l2AH2+KU5s/rAWgRup+gWxULCxwhOhYCyuW7OKdb6FIuYRNAg4pvRuNHDfysDzjokfRMppMesH3SBCxXMtmfTx5iENu+zqAU2qgKq9ipWQKkAQcgsn97LD4nCwurF1KBM+hZbFI79EZ6JAEM73YAPrwyXYYT1NQCxKBsrrBpq3pawnGq3M2i5U3fm7k+zagOqMB0GokTG43gQjTySIGiIhYqIW3uHxZJj9ekUdT1efP8Ve+WkiuIjpY4c9jEc/I6vvvz6Ba9DoG01WvAbQmFbRI9BizISs+LdNJPT3QpA3w0oBiy4vL8VirhsxAFp+a2TtT7B5GpgTWFzMRCW6531+pny07rrJDqLZQJWeLvLB6UbFjkmHDck9FrI509RKnZ8qwpyWuA3/kmRP4dhTeb0s6+k+a9gPE480doLsrNfYMC/Q9XnfzqVbz4JSUm9OZRlDQ7DSjGUrUNKs9SRdp3I=
+  - secure: WVrIuqdfxBnhAlDXoZ1p9F2TWFVE59+VuDesI0NoEQDOYnC8qw/ZOJptALJy4irJezs9uvZcKOwyAME0ye1aXjzAwXDdoxFWXVDjNr2xs8pyndM4oxyRPThzjKSRb9XEK9386AgexCgf+T/EP7BVo1i5QTYsNpLRtcJAGa2x59tnANkLJJn3nhdP0WfzYS+AsPEwIEIAMB6b4aH40mJSs1A9NO7yRHcLf8Ml9a5hs+s1jm9guOK47p6ys0zBejMHLgyGb+e5D0RAeL9Rb/XP9s49b63fkSeI+VTmjiALFSS3uzBT3T0d6+jJC4xXAKtH8V+HANTHFxJfbekX2lfOzw8zjCWySQRafzSzkHuNtu7kVhSVbztgkLms7f1Biuh/wh5q37ksOQRxLPrHhzb0waknSXku0VMhlLjvzCFxG8cHTdxuhMoBvIWYqI7QlkaigKmPz8IeI/nHwxg6RA6YHfuR0JfTL6a86Fx4Iqj9UUudUsrP4vhiqJfI3qQczrW8ZgCUK35LkdCkV+lh5g1julAb42M2TEQOMC/N2SROR24DuATpFu/Tykwdr0dkLKpso92SEOBt9ajU2vAUjw9Y7UNor4F+Jlft7u0nzteRNlIDiBYm0MMGalBqiKXReNsw8korVpOrvG69swew2ei7WJERJpIkNAPHEmzMwmuh9IY=
