@@ -13,7 +13,7 @@ install:
 - docker push  $DOCKER_USERNAME/se234-lab10-backend
 - docker pull  $DOCKER_USERNAME/se234-lab10-client
 script:
-- docker-compose -H $DOCKER_HOST up
+- docker-compose -H $DOCKER_HOST up -d
 after_success:
 - docker ps
 env:
